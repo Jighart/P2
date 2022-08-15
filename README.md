@@ -1,4 +1,4 @@
-# OpenClassrooms: Projet 2: Books To Scrape
+# Projet 2: Books To Scrape
 
 Ce script permet de récupérer les informations de tout les produits sur le site http://books.toscrape.com/.
 Ces informations sont les suivantes:
