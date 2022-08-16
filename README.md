@@ -18,11 +18,11 @@ Les images sont également téléchargées dans le dossier images.
 
 # Installation:
 Commencez tout d'abord par installer Python.
-Lancez ensuite la console, placez vous dans le dossier de votre choix puis clonez ce repository:
+Lancez ensuite la console, placez-vous dans le dossier de votre choix puis clonez ce repository :
 ```
 git clone https://github.com/Jighart/P2-BookToScrape.git
 ```
-Placez vous dans le dossier OC_P2_BooksToScrape, puis créez un nouvel environnement virtuel:
+Placez vous dans le dossier P2-BookToScrape, puis créez un nouvel environnement virtuel :
 ```
 python -m venv env
 ```
@@ -35,11 +35,11 @@ Mac/Linux:
 ```
 source env/bin/activate
 ```
-Il ne reste plus qu'à installer les packages requis:
+Il ne reste plus qu'à installer les packages requis :
 ```
 pip install -r requirements.txt
 ```
-Vous pouvez enfin lancer le script:
+Vous pouvez enfin lancer le script :
 ```
 python main.py
 ```

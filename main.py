@@ -5,6 +5,7 @@ import wget
 from bs4 import BeautifulSoup
 from word2number import w2n
 
+
 # Scraping function to extract data from each book's page and save them in files
 def scrap_book(url, category):
     page = requests.get(url)
@@ -23,9 +24,9 @@ def scrap_book(url, category):
 
     # Appending each category's CSV file with the book's data
     with open('data/' + category + '.csv', 'a', encoding='utf8', errors='replace') as csv_file:
-        writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
-        writer.writerow([url, upc, title, price_inc_tax, price_exc_tax, number_available, description, category,
-                         review, image])
+        csv.writer(csv_file, delimiter=',', lineterminator='\n').writerow(
+            [url, upc, title, price_inc_tax, price_exc_tax, number_available, description, category,
+             review, image])
 
     # Saving the image for each book, removing it if already existing in the images folder
     filename = 'images/' + os.path.basename(image)
@@ -33,6 +34,7 @@ def scrap_book(url, category):
     wget.download(image, out='images/', bar=False)
 
     print(title)
+
 
 # Initial page request and folders creation
 page = requests.get('http://books.toscrape.com/index.html')
@@ -47,16 +49,16 @@ for a in soup.find('div', {'class': 'side_categories'}).ul.find_all('a'):
         categories[a.text.replace('\n', '').replace('  ', '')] = 'http://books.toscrape.com/' + a.get('href')
 
 # Loop for each category
-for category, catUrl in categories.items():
-    page = requests.get(catUrl)
+for category, cat_url in categories.items():
+    page = requests.get(cat_url)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # Initial creation of CSV files for each category, with column headers
-    csvHeaders = ['product_page_url', 'universal_product_code', 'title', 'price_including_tax', 'price_excluding_tax',
-               'number_available', 'product_description', 'category', 'review_rating', 'image_url']
+    csv_headers = ['product_page_url', 'universal_product_code', 'title', 'price_including_tax', 'price_excluding_tax',
+                   'number_available', 'product_description', 'category', 'review_rating', 'image_url']
 
-    with open('data/' + category + '.csv', 'w', encoding='utf8', errors='replace') as csv_file:
-        writer = csv.DictWriter(csv_file, delimiter=",", fieldnames=csvHeaders, lineterminator='\n')
+    with open('data/' + category + '.csv', 'w', encoding='utf8', errors='replace') as csv_init:
+        writer = csv.DictWriter(csv_init, delimiter=",", fieldnames=csv_headers, lineterminator='\n')
         writer.writeheader()
         print('\n ---------------  Scraping category: ' + category + '  ---------------')
 
@@ -77,5 +79,5 @@ for category, catUrl in categories.items():
         i += 1
         # Updating content if a next page is present
         if nbPages > 1:
-            nextPage = requests.get(catUrl.replace('index.html', 'page-' + str(i+1) + '.html'))
+            nextPage = requests.get(cat_url.replace('index.html', 'page-' + str(i + 1) + '.html'))
             soup = BeautifulSoup(nextPage.content, 'html.parser')
