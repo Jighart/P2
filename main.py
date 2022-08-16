@@ -30,7 +30,7 @@ def scrap_book(url, category):
     # Saving the image for each book, removing it if already existing in the images folder
     filename = 'images/' + os.path.basename(image)
     if os.path.exists(filename): os.remove(filename)
-    wget.download(image, out='images/')
+    wget.download(image, out='images/', bar=False)
 
     print(title)
 
@@ -62,7 +62,7 @@ for category, catUrl in categories.items():
 
     # Detection of multiple pages if present
     if soup.find('ul', {'class': 'pager'}):
-        nbPages = int(soup.find('li', {'class': 'current'}).text.split(' ')[31].replace('\n', ''))
+        nbPages = int(soup.find('li', {'class': 'current'}).text.strip()[-1])
     else:
         nbPages = 1
 
