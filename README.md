@@ -1,7 +1,7 @@
-# Projet 2: Books To Scrape
+# Projet 2: Books Online
 
 Ce script permet de récupérer les informations de tout les produits sur le site http://books.toscrape.com/.
-Ces informations sont les suivantes:
+Ces informations sont les suivantes :
  - URL du livre
  - Universal Product Code (upc)
  - Titre du livre
@@ -13,12 +13,11 @@ Ces informations sont les suivantes:
  - Rating
  - URL de l'image
 
-Ces informations sont enregistrées dans le dossier data, avec un fichier .csv par catégorie.
+Ces informations sont enregistrées dans le dossier data, avec un fichier .csv par catégorie (encodage UTF-8).
 Les images sont également téléchargées dans le dossier images.
 
 # Installation:
-Commencez tout d'abord par installer Python.
-Lancez ensuite la console, placez-vous dans le dossier de votre choix puis clonez ce repository :
+Une fois Python installé, lancez la console, placez-vous dans le dossier de votre choix puis clonez ce repository :
 ```
 git clone https://github.com/Jighart/P2-BookToScrape.git
 ```
@@ -27,11 +26,11 @@ Placez vous dans le dossier P2-BookToScrape, puis créez un nouvel environnement
 python -m venv env
 ```
 Ensuite, activez-le.
-Windows:
+Windows :
 ```
 env\scripts\activate.bat
 ```
-Mac/Linux:
+Mac/Linux :
 ```
 source env/bin/activate
 ```

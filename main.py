@@ -6,10 +6,10 @@ from bs4 import BeautifulSoup
 from word2number import w2n
 
 
-# Scraping function to extract data from each book's page and save them in files
+# Scraping function to extract data from each book's page and save them in csv files
 def scrap_book(url, category):
     page = requests.get(url)
-    soup = BeautifulSoup(page.content.decode('utf8').encode('utf8', 'ignore'), 'html.parser')
+    soup = BeautifulSoup(page.content, 'html.parser')
 
     # Data extraction
     title = soup.h1.string
@@ -17,18 +17,19 @@ def scrap_book(url, category):
     price_inc_tax = soup.find_all("td")[3].string.replace('£', '')
     price_exc_tax = soup.find_all("td")[2].string.replace('£', '')
     number_available = int(''.join(filter(str.isdigit, soup.find_all("td")[5].string)))
-    description = soup.find("article", class_="product_page").find_all("p")[3]
-    if description: description = description.string
+    if soup.find("div", {"id": "product_description"}):
+        description = soup.find("article", class_="product_page").find_all("p")[3].string
+    else: description = ''
     review = w2n.word_to_num(soup.find("p", class_="star-rating")['class'][1])
     image = soup.img['src'].replace("../..", "https://books.toscrape.com")
 
     # Appending each category's CSV file with the book's data
+    book_data = [url, upc, title, price_inc_tax, price_exc_tax, number_available, description, category,
+                 review, image]
     with open('data/' + category + '.csv', 'a', encoding='utf8', errors='replace') as csv_file:
-        csv.writer(csv_file, delimiter=',', lineterminator='\n').writerow(
-            [url, upc, title, price_inc_tax, price_exc_tax, number_available, description, category,
-             review, image])
+        csv.writer(csv_file, delimiter=',', lineterminator='\n').writerow(book_data)
 
-    # Saving the image for each book, removing it if already existing in the images folder
+    # Saving the image for each book, deleting it first if already existing in the images folder
     filename = 'images/' + os.path.basename(image)
     if os.path.exists(filename): os.remove(filename)
     wget.download(image, out='images/', bar=False)
@@ -53,7 +54,7 @@ for category, cat_url in categories.items():
     page = requests.get(cat_url)
     soup = BeautifulSoup(page.content, 'html.parser')
 
-    # Initial creation of CSV files for each category, with column headers
+    # Creation of CSV files for each category, with column headers
     csv_headers = ['product_page_url', 'universal_product_code', 'title', 'price_including_tax', 'price_excluding_tax',
                    'number_available', 'product_description', 'category', 'review_rating', 'image_url']
 
@@ -64,20 +65,19 @@ for category, cat_url in categories.items():
 
     # Detection of multiple pages if present
     if soup.find('ul', {'class': 'pager'}):
-        nbPages = int(soup.find('li', {'class': 'current'}).text.strip()[-1])
+        pages_number = int(soup.find('li', {'class': 'current'}).text.strip()[-1])
     else:
-        nbPages = 1
+        pages_number = 1
 
     # Loop for each book in a category
     i = 0
-    booksUrl = []
-    while i < nbPages:
+    while i < pages_number:
         # Scraping function call for each book, sending URL and category as arguments
         for book in soup.find_all('article'):
-            bookUrl = book.h3.a.get('href').replace('../../../', 'http://books.toscrape.com/catalogue/')
-            scrap_book(bookUrl, category)
+            book_url = book.h3.a.get('href').replace('../../../', 'http://books.toscrape.com/catalogue/')
+            scrap_book(book_url, category)
         i += 1
         # Updating content if a next page is present
-        if nbPages > 1:
-            nextPage = requests.get(cat_url.replace('index.html', 'page-' + str(i + 1) + '.html'))
-            soup = BeautifulSoup(nextPage.content, 'html.parser')
+        if pages_number > 1:
+            next_page = requests.get(cat_url.replace('index.html', 'page-' + str(i + 1) + '.html'))
+            soup = BeautifulSoup(next_page.content, 'html.parser')
