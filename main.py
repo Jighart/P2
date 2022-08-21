@@ -61,7 +61,7 @@ for category, cat_url in categories.items():
     with open('data/' + category + '.csv', 'w', encoding='utf8', errors='replace') as csv_init:
         writer = csv.DictWriter(csv_init, delimiter=",", fieldnames=csv_headers, lineterminator='\n')
         writer.writeheader()
-        print('\n ---------------  Scraping category: ' + category + '  ---------------')
+        print('\n---------------  Scraping category: ' + category + '  ---------------')
 
     # Detection of multiple pages if present
     if soup.find('ul', {'class': 'pager'}):
